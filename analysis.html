@@ -35,6 +35,35 @@ ul.task-list li input[type="checkbox"] {
 <link href="analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="analysis_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -63,7 +92,12 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Public opinion polls <a href="https://en.wikipedia.org/wiki/Nate_Silver">have been used</a> to predict election outcomes. We will use statistics to predict the proportion of voters that will vote for Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024.</p>
+<p>Public opinion polls <a href="https://en.wikipedia.org/wiki/Nate_Silver">have been used</a> to predict election outcomes. We will use statistics to predict the proportion of voters that will vote for Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey.</p>
+<p>We use the logistic regression model for binary data, where the <span class="math inline">\(\beta\)</span> coefficients represent the effect of predictors (<span class="math inline">\(X_i\)</span>) on the log-odds of the outcome (<span class="math inline">\(Y\)</span>).</p>
+<p><span class="math display">\[P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}\]</span></p>
+<p>with <span class="math inline">\(Y \sim \text{Bernoulli}(\rho)\)</span> where <span class="math inline">\(\rho\)</span> is the probability above.</p>
+<p>Recall, in a logistic regression model, the intercept <span class="math inline">\(\beta_0\)</span> represents the log-odds of outcome when all predictor variables are <span class="math inline">\(0\)</span>. The slope <span class="math inline">\(\beta_1\)</span> shows how those log-odds change when the predictor increases by 1 unit.</p>
+<p><span class="math inline">\(\widehat{p} = \frac{1}{1 + e^{-(-0.32)}} \approx 0.42\)</span></p>
 
 </main>
 <!-- /main column -->

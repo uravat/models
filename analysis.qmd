@@ -7,11 +7,45 @@ execute:
 ---
 
 ```{r}
+quiet_library <- function(pkg) {
+  suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+}
+```
+```{r}
 suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(tidymodels))
+#quitet_library(broom)
+suppressPackageStartupMessages(library(broom))
+suppressPackageStartupMessages(library(easystats))
 
+
+
+```
+```{r}
 poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), 
                                         rep("No", 904)))) |> 
                 slice_sample(prop = 1)
 ```
 
-Public opinion polls [have been used](https://en.wikipedia.org/wiki/Nate_Silver) to predict election outcomes.  We will use statistics to predict the proportion of voters that will vote for  Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024.
+Public opinion polls [have been used](https://en.wikipedia.org/wiki/Nate_Silver) to predict election outcomes.  We will use statistics to predict the proportion of voters that will vote for  Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey. 
+
+We use the logistic regression model for binary data, where the $\beta$ coefficients represent the effect of predictors ($X_i$) on the log-odds of the outcome ($Y$).
+
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$ where $\rho$ is the probability above.
+
+Recall, in a logistic regression model, the intercept $\beta_0$ represents the log-odds of outcome  when all predictor variables are $0$. The slope $\beta_1$ shows how those log-odds change when the predictor increases by 1 unit.
+
+
+$\widehat{p} = \frac{1}{1 + e^{-(-0.32)}} \approx 0.42$
+```{r}
+#| cache: true
+set.seed(10)
+poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), 
+                                        rep("No", 904)))) |> 
+				slice_sample(prop = 1)
+fit_biden <- logistic_reg() |> 
+  fit(biden ~ 1, data = poll_data)
+#check_predictions(extract_fit_engine(fit_biden)) # only for console with easystats package
+```
