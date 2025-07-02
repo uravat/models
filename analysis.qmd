@@ -1,0 +1,17 @@
+---
+title: "Biden Polling"
+format: html
+execute:
+ echo: false
+ messsage: false
+---
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+
+poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), 
+                                        rep("No", 904)))) |> 
+                slice_sample(prop = 1)
+```
+
+Public opinion polls [have been used](https://en.wikipedia.org/wiki/Nate_Silver) to predict election outcomes.  We will use statistics to predict the proportion of voters that will vote for  Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024.
