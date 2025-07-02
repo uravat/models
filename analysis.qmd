@@ -17,17 +17,42 @@ suppressPackageStartupMessages(library(tidymodels))
 #quitet_library(broom)
 suppressPackageStartupMessages(library(broom))
 suppressPackageStartupMessages(library(easystats))
+library(marginaleffects) 
+```
 
+```{r}
+library(scales)
 
+# Biden support only
+biden_support <- tibble::tibble(
+  Group = "Yes",
+  Estimate = 0.42,
+  lower = 0.396,
+  upper = 0.445
+)
+
+ggplot(biden_support, aes(x = Group, y = Estimate)) +
+  geom_col(width = 0.4, fill = "steelblue") +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1) +
+  scale_y_continuous(labels = percent_format(accuracy = 1), limits = c(0, 0.6)) +
+  labs(
+    title = "Predicted Support for Joe Biden, March 2024",
+    subtitle = "Estimated support: 42% (95% CI: 39.6%–44.5%)",
+    x = NULL,
+    y = "Predicted vote share",
+    caption = "Source: YouGov survey of 1,559 U.S. adults, March 10–12, 2024"
+  ) +
+  theme_minimal(base_size = 12)
 
 ```
+
 ```{r}
 poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), 
                                         rep("No", 904)))) |> 
                 slice_sample(prop = 1)
 ```
 
-Public opinion polls [have been used](https://en.wikipedia.org/wiki/Nate_Silver) to predict election outcomes.  We will use statistics to predict the proportion of voters that will vote for  Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey. 
+Public opinion polls [have been used](https://en.wikipedia.org/wiki/Nate_Silver) to predict election outcomes.  We will use statistics to predict the proportion of voters that will vote for  Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey. We model voter support for Joe Biden as a Bernoulli random variable since the outcome is binary outcome (support vs. not). We use an intercept-only logistic regression model. We estimate that 42% of U.S. adults plan to vote for Joe Biden, with a 95% confidence interval ranging from 39.6% to 44.5%. The estimates for Biden’s support and their associated uncertainty might be inaccurate due to potential sampling bias, especially if late-deciding voters differ systematically from those surveyed in March. Additionally, survey respondents may misreport their preferences or change their minds before the election, which can affect the reliability of the estimates. To address this, an alternative estimate could incorporate data from later polls closer to the election date or use a weighted model accounting for demographic and behavioral factors. This might result in a different confidence interval that better reflects the evolving voter landscape.
 
 We use the logistic regression model for binary data, where the $\beta$ coefficients represent the effect of predictors ($X_i$) on the log-odds of the outcome ($Y$).
 
@@ -49,3 +74,31 @@ fit_biden <- logistic_reg() |>
   fit(biden ~ 1, data = poll_data)
 #check_predictions(extract_fit_engine(fit_biden)) # only for console with easystats package
 ```
+
+
+```{r}
+library(knitr)
+
+# Create a small tibble manually (or use tidy(fit_biden, conf.int = TRUE))
+logit_table <- tibble::tibble(
+  Term = "(Intercept)",
+  Estimate = round(-0.322, 3),
+  `Std. Error` = round(0.0513, 3),
+  Statistic = round(-6.28, 2),
+  `P-value` = formatC(3.40e-10, format = "e", digits = 2),
+  `95% CI (Low)` = round(-0.423, 3),
+  `95% CI (High)` = round(-0.222, 3)
+)
+
+# Display table
+kable(logit_table, caption = "Logistic Regression Results for Biden Support: Source: March 2024 YouGov Poll", align = "c")
+```
+
+
+```{r}
+#predictions(fit_biden, type = "prob") # in console
+#plot_predictions(fit_biden, type = "prob", condition = "group")
+#avg_predictions(fit_biden, type = "prob")
+```
+
+

@@ -92,12 +92,59 @@ window.Quarto = {
 </header>
 
 
-<p>Public opinion polls <a href="https://en.wikipedia.org/wiki/Nate_Silver">have been used</a> to predict election outcomes. We will use statistics to predict the proportion of voters that will vote for Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Public opinion polls <a href="https://en.wikipedia.org/wiki/Nate_Silver">have been used</a> to predict election outcomes. We will use statistics to predict the proportion of voters that will vote for Biden in the Nov election using data from a YouGov survey of 1,559 U.S. adult citizens conducted in March 2024. Our estimates may not be valid if voter preferences change vastly from the survey. We model voter support for Joe Biden as a Bernoulli random variable since the outcome is binary outcome (support vs.&nbsp;not). We use an intercept-only logistic regression model. We estimate that 42% of U.S. adults plan to vote for Joe Biden, with a 95% confidence interval ranging from 39.6% to 44.5%. The estimates for Biden’s support and their associated uncertainty might be inaccurate due to potential sampling bias, especially if late-deciding voters differ systematically from those surveyed in March. Additionally, survey respondents may misreport their preferences or change their minds before the election, which can affect the reliability of the estimates. To address this, an alternative estimate could incorporate data from later polls closer to the election date or use a weighted model accounting for demographic and behavioral factors. This might result in a different confidence interval that better reflects the evolving voter landscape.</p>
 <p>We use the logistic regression model for binary data, where the <span class="math inline">\(\beta\)</span> coefficients represent the effect of predictors (<span class="math inline">\(X_i\)</span>) on the log-odds of the outcome (<span class="math inline">\(Y\)</span>).</p>
 <p><span class="math display">\[P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}\]</span></p>
 <p>with <span class="math inline">\(Y \sim \text{Bernoulli}(\rho)\)</span> where <span class="math inline">\(\rho\)</span> is the probability above.</p>
 <p>Recall, in a logistic regression model, the intercept <span class="math inline">\(\beta_0\)</span> represents the log-odds of outcome when all predictor variables are <span class="math inline">\(0\)</span>. The slope <span class="math inline">\(\beta_1\)</span> shows how those log-odds change when the predictor increases by 1 unit.</p>
 <p><span class="math inline">\(\widehat{p} = \frac{1}{1 + e^{-(-0.32)}} \approx 0.42\)</span></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Logistic Regression Results for Biden Support: Source: March 2024 YouGov Poll</caption>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Term</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: center;">Std. Error</th>
+<th style="text-align: center;">Statistic</th>
+<th style="text-align: center;">P-value</th>
+<th style="text-align: center;">95% CI (Low)</th>
+<th style="text-align: center;">95% CI (High)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">(Intercept)</td>
+<td style="text-align: center;">-0.322</td>
+<td style="text-align: center;">0.051</td>
+<td style="text-align: center;">-6.28</td>
+<td style="text-align: center;">3.40e-10</td>
+<td style="text-align: center;">-0.423</td>
+<td style="text-align: center;">-0.222</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 </main>
 <!-- /main column -->
